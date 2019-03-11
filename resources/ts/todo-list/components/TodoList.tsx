@@ -18,7 +18,7 @@ const TodoSummary = (props: {finishedNum: number, unFinishedNum: number}) => {
         direction="row"
         justify="center"
         alignItems="center"
-        spacing={16}
+        spacing={0}
     >
         <Grid item xs={12} sm={6} container justify="center" alignItems="center">
             <Badge badgeContent={props.finishedNum} color="primary">
@@ -27,7 +27,7 @@ const TodoSummary = (props: {finishedNum: number, unFinishedNum: number}) => {
         </Grid>
         <Grid item xs={12} sm={6} container justify="center" alignItems="center">
             <Badge badgeContent={props.unFinishedNum} color="secondary">
-                <Typography><DoneOutlineIcon />UnFinished Items</Typography>
+                <Typography><DoneOutlineIcon />(UnFinished Items)</Typography>
             </Badge>
         </Grid>
     </Grid>
@@ -49,14 +49,12 @@ export default class TodoList extends Component{
     }
 
     onDelete(id: number){
-        // let r = confirm('Are you sure?');
-        // if(r === true) {
-        //     rootStore.todoList.deleteTodoItemByID(id);
-        // }
         rootStore.modal.openModal({
             title: 'Are you sure?',
             code: 200,
-            onAction: rootStore.todoList.deleteTodoItemByID(id)
+            actionType: 'deleteTodoItem',
+            payload: {id},
+            isConfirmDialog: true
         })
     }
 

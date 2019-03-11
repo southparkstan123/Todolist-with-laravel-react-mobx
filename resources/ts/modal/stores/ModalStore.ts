@@ -1,11 +1,14 @@
 import { observable, computed, action } from 'mobx';
-import { RootStore } from '../../RootStore';
+import { RootStore, rootStore } from '../../RootStore';
+import _ from 'lodash';
 
 export interface Modal{
     title: string,
     errors?: any,
     code: number,
-    onAction?: any
+    isConfirmDialog: boolean,
+    payload?: any,
+    actionType?: string | undefined
 }
 
 interface ModalState extends Modal{
@@ -25,7 +28,9 @@ export class ModalStore{
         errors: {},
         code: 0,
         show: false,
-        onAction: {}
+        actionType: undefined,
+        payload: {},
+        isConfirmDialog: false
     }
 
     @computed
@@ -48,14 +53,21 @@ export class ModalStore{
         return this.modal.errors;
     }
 
-    @action
+    @computed
+    get isConfirmDialog(): boolean{
+        return this.modal.isConfirmDialog;
+    }
+
+    @action.bound
     openModal(modalObj: Modal) {
         this.modal = {
             title: modalObj.title,
             errors: modalObj.errors,
             code: modalObj.code,
             show: true,
-            onAction: modalObj.onAction
+            actionType: modalObj.actionType,
+            payload: modalObj.payload,
+            isConfirmDialog: modalObj.isConfirmDialog
         }
     }
 
@@ -65,12 +77,20 @@ export class ModalStore{
             title: '',
             errors: {},
             code: 0,
-            show: false
+            show: false,
+            isConfirmDialog: false
         }
     }
 
     @action
     onAction(){
-        this.modal.onAction()
+        switch(this.modal.actionType){
+            case 'deleteTodoItem':
+                rootStore.todoList.deleteTodoItemByID(this.modal.payload.id)
+                break;
+            default:
+                break;
+        }
+        this.closeModal();
     }
 }

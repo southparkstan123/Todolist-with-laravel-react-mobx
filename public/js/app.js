@@ -57464,15 +57464,27 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 var ModalComponent = (function (_super) {
     __extends(ModalComponent, _super);
-    function ModalComponent() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function ModalComponent(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            isOk: false
+        };
+        _this.handleAction = _this.handleAction.bind(_this);
+        return _this;
     }
+    ModalComponent.prototype.handleAction = function () {
+        this.setState({
+            isOk: true
+        }, function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.onAction(); });
+    };
     ModalComponent.prototype.render = function () {
         return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Dialog__WEBPACK_IMPORTED_MODULE_1___default.a, { fullScreen: false, open: _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.isShow, onClose: function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.closeModal(); }, "aria-labelledby": "responsive-dialog-title" },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_DialogTitle__WEBPACK_IMPORTED_MODULE_2___default.a, { id: "responsive-dialog-title" }, _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.getTitle),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_DialogActions__WEBPACK_IMPORTED_MODULE_3___default.a, null,
-                (_RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.onAction) ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Button__WEBPACK_IMPORTED_MODULE_4___default.a, { onClick: function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.onAction(); }, color: "primary", autoFocus: true }, "OK") : false,
-                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Button__WEBPACK_IMPORTED_MODULE_4___default.a, { onClick: function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.closeModal(); }, color: "primary" }, "Cancel"))));
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_DialogActions__WEBPACK_IMPORTED_MODULE_3___default.a, null, (_RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.isConfirmDialog) ?
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Button__WEBPACK_IMPORTED_MODULE_4___default.a, { onClick: this.handleAction, color: "primary", autoFocus: true }, "OK"),
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Button__WEBPACK_IMPORTED_MODULE_4___default.a, { onClick: function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.closeModal(); }, color: "primary" }, "Cancel")) :
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Button__WEBPACK_IMPORTED_MODULE_4___default.a, { onClick: function () { return _RootStore__WEBPACK_IMPORTED_MODULE_6__["rootStore"].modal.closeModal(); }, color: "primary" }, "OK"))));
     };
     ModalComponent = __decorate([
         Object(mobx_react__WEBPACK_IMPORTED_MODULE_5__["inject"])('rootStore'),
@@ -57496,12 +57508,14 @@ var ModalComponent = (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ModalStore", function() { return ModalStore; });
 /* harmony import */ var mobx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mobx */ "./node_modules/mobx/lib/mobx.module.js");
+/* harmony import */ var _RootStore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../RootStore */ "./resources/ts/RootStore.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 var ModalStore = (function () {
     function ModalStore(rootStore) {
@@ -57510,7 +57524,9 @@ var ModalStore = (function () {
             errors: {},
             code: 0,
             show: false,
-            onAction: {}
+            actionType: undefined,
+            payload: {},
+            isConfirmDialog: false
         };
         this.rootStore = rootStore;
     }
@@ -57542,13 +57558,22 @@ var ModalStore = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ModalStore.prototype, "isConfirmDialog", {
+        get: function () {
+            return this.modal.isConfirmDialog;
+        },
+        enumerable: true,
+        configurable: true
+    });
     ModalStore.prototype.openModal = function (modalObj) {
         this.modal = {
             title: modalObj.title,
             errors: modalObj.errors,
             code: modalObj.code,
             show: true,
-            onAction: modalObj.onAction
+            actionType: modalObj.actionType,
+            payload: modalObj.payload,
+            isConfirmDialog: modalObj.isConfirmDialog
         };
     };
     ModalStore.prototype.closeModal = function () {
@@ -57556,10 +57581,19 @@ var ModalStore = (function () {
             title: '',
             errors: {},
             code: 0,
-            show: false
+            show: false,
+            isConfirmDialog: false
         };
     };
     ModalStore.prototype.onAction = function () {
+        switch (this.modal.actionType) {
+            case 'deleteTodoItem':
+                _RootStore__WEBPACK_IMPORTED_MODULE_1__["rootStore"].todoList.deleteTodoItemByID(this.modal.payload.id);
+                break;
+            default:
+                break;
+        }
+        this.closeModal();
     };
     __decorate([
         mobx__WEBPACK_IMPORTED_MODULE_0__["observable"]
@@ -57577,7 +57611,10 @@ var ModalStore = (function () {
         mobx__WEBPACK_IMPORTED_MODULE_0__["computed"]
     ], ModalStore.prototype, "getErrors", null);
     __decorate([
-        mobx__WEBPACK_IMPORTED_MODULE_0__["action"]
+        mobx__WEBPACK_IMPORTED_MODULE_0__["computed"]
+    ], ModalStore.prototype, "isConfirmDialog", null);
+    __decorate([
+        mobx__WEBPACK_IMPORTED_MODULE_0__["action"].bound
     ], ModalStore.prototype, "openModal", null);
     __decorate([
         mobx__WEBPACK_IMPORTED_MODULE_0__["action"]
@@ -57831,7 +57868,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 var TodoSummary = function (props) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Grid__WEBPACK_IMPORTED_MODULE_3___default.a, { container: true, direction: "row", justify: "center", alignItems: "center", spacing: 16 },
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Grid__WEBPACK_IMPORTED_MODULE_3___default.a, { container: true, direction: "row", justify: "center", alignItems: "center", spacing: 0 },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Grid__WEBPACK_IMPORTED_MODULE_3___default.a, { item: true, xs: 12, sm: 6, container: true, justify: "center", alignItems: "center" },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Badge__WEBPACK_IMPORTED_MODULE_6___default.a, { badgeContent: props.finishedNum, color: "primary" },
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_7___default.a, null,
@@ -57841,7 +57878,7 @@ var TodoSummary = function (props) {
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Badge__WEBPACK_IMPORTED_MODULE_6___default.a, { badgeContent: props.unFinishedNum, color: "secondary" },
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_7___default.a, null,
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_DoneOutline__WEBPACK_IMPORTED_MODULE_5___default.a, null),
-                    "UnFinished Items"))));
+                    "(UnFinished Items)"))));
 };
 var TodoList = (function (_super) {
     __extends(TodoList, _super);
@@ -57859,7 +57896,9 @@ var TodoList = (function (_super) {
         _RootStore__WEBPACK_IMPORTED_MODULE_10__["rootStore"].modal.openModal({
             title: 'Are you sure?',
             code: 200,
-            onAction: _RootStore__WEBPACK_IMPORTED_MODULE_10__["rootStore"].todoList.deleteTodoItemByID(id)
+            actionType: 'deleteTodoItem',
+            payload: { id: id },
+            isConfirmDialog: true
         });
     };
     TodoList.prototype.onUpdate = function (data) {
@@ -58123,7 +58162,8 @@ var TodoListStore = (function () {
                         this.rootStore.modal.openModal({
                             title: error_1.title,
                             errors: error_1.errors,
-                            code: error_1.code
+                            code: error_1.code,
+                            isConfirmDialog: false
                         });
                         return [3, 3];
                     case 3: return [2];
@@ -58149,6 +58189,7 @@ var TodoListStore = (function () {
                             title: error_2.title,
                             errors: error_2.errors,
                             code: error_2.code,
+                            isConfirmDialog: false
                         });
                         return [3, 3];
                     case 3: return [2];
@@ -58178,7 +58219,8 @@ var TodoListStore = (function () {
                         this.rootStore.modal.openModal({
                             title: error_3.title,
                             errors: error_3.errors,
-                            code: error_3.code
+                            code: error_3.code,
+                            isConfirmDialog: false
                         });
                         return [3, 3];
                     case 3: return [2];
@@ -58205,7 +58247,8 @@ var TodoListStore = (function () {
                         this.rootStore.modal.openModal({
                             title: error_4.title,
                             errors: error_4.errors,
-                            code: error_4.code
+                            code: error_4.code,
+                            isConfirmDialog: false
                         });
                         return [3, 3];
                     case 3: return [2];
@@ -58248,8 +58291,8 @@ var TodoListStore = (function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/vagrant/code/todo-spa/resources/ts/app.tsx */"./resources/ts/app.tsx");
-module.exports = __webpack_require__(/*! /home/vagrant/code/todo-spa/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/dicksonwong/Desktop/projects/todo-spa/resources/ts/app.tsx */"./resources/ts/app.tsx");
+module.exports = __webpack_require__(/*! /Users/dicksonwong/Desktop/projects/todo-spa/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

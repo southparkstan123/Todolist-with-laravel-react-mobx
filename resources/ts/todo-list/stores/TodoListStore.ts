@@ -42,7 +42,8 @@ export class TodoListStore{
         this.rootStore.modal.openModal({
           title: error.title,
           errors: error.errors,
-          code: error.code
+          code: error.code,
+          isConfirmDialog: false
         });
       }
     }
@@ -57,6 +58,7 @@ export class TodoListStore{
           title: error.title,
           errors: error.errors,
           code: error.code,
+          isConfirmDialog: false
         })
       }
     }
@@ -74,7 +76,8 @@ export class TodoListStore{
         this.rootStore.modal.openModal({
           title: error.title,
           errors: error.errors,
-          code: error.code
+          code: error.code,
+          isConfirmDialog: false
         })
       }
     }
@@ -90,7 +93,8 @@ export class TodoListStore{
         this.rootStore.modal.openModal({
           title: error.title,
           errors: error.errors,
-          code: error.code
+          code: error.code,
+          isConfirmDialog: false
         });
       }
     }

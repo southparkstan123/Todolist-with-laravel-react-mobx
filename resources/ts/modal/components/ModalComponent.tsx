@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,9 +9,15 @@ import { Modal, ModalStore } from '../stores/ModalStore';
 import { rootStore } from '../../RootStore';
 import { withStyles } from '@material-ui/core/styles';
 
+interface ModalComponentProps{}
+
+interface ModalComponentState{
+    isOk: boolean;
+}
+
 @inject('rootStore')
 @observer
-export class ModalComponent extends Component{
+export class ModalComponent extends Component<ModalComponentProps, ModalComponentState>{
 
     // codeMapClass = (code: number): string => {
     //     const codeStr: string = code.toString();
@@ -23,6 +29,20 @@ export class ModalComponent extends Component{
     //         return 'black';
     //     }
     // }
+
+    constructor(props: ModalComponentProps){
+        super(props)
+        this.state = {
+            isOk: false
+        }
+        this.handleAction = this.handleAction.bind(this);
+    }
+
+    handleAction(){
+        this.setState({
+            isOk: true
+        }, () => rootStore.modal.onAction())
+    }
 
     render(){
         // const MyDialogTitle = withStyles({
@@ -41,9 +61,13 @@ export class ModalComponent extends Component{
                         {/* <DialogContentText>{rootStore.modal.getTitle}</DialogContentText> */}
                         <DialogActions>
                             {
-                                (rootStore.modal.onAction) ? <Button onClick={() => rootStore.modal.onAction()} color="primary" autoFocus>OK</Button> : false
+                                (rootStore.modal.isConfirmDialog) ? 
+                                <Fragment>
+                                    <Button onClick={this.handleAction} color="primary" autoFocus>OK</Button> 
+                                    <Button onClick={() => rootStore.modal.closeModal()} color="primary">Cancel</Button>
+                                </Fragment> : 
+                                    <Button onClick={() => rootStore.modal.closeModal()} color="primary">OK</Button> 
                             }
-                            <Button onClick={() => rootStore.modal.closeModal()} color="primary">Cancel</Button>
                         </DialogActions>
                     </Dialog>)
     }
