@@ -8,11 +8,30 @@ import { observer, inject } from 'mobx-react';
 import { Modal, ModalStore } from '../stores/ModalStore';
 import { rootStore } from '../../RootStore';
 import { withStyles } from '@material-ui/core/styles';
+import _ from 'lodash';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 interface ModalComponentProps{}
 
 interface ModalComponentState{
     isOk: boolean;
+}
+
+const ErrorDetail = (props: {errorObj: object | undefined}) => {
+    const items: Array<string> = _.chain(props.errorObj).values().flattenDeep().value();
+    return (
+        <div>
+            <List>
+                <ListItem>
+                    {
+                        items.map((item: string, index: number) => <ListItemText key={index} primary={item} />)
+                    }
+                </ListItem>
+            </List>
+        </div>
+    )
 }
 
 @inject('rootStore')
@@ -58,7 +77,7 @@ export class ModalComponent extends Component<ModalComponentProps, ModalComponen
                         aria-labelledby="responsive-dialog-title"
                     >
                         <DialogTitle id="responsive-dialog-title">{rootStore.modal.getTitle}</DialogTitle>
-                        {/* <DialogContentText>{rootStore.modal.getTitle}</DialogContentText> */}
+                        <ErrorDetail errorObj={rootStore.modal.getErrors}></ErrorDetail>
                         <DialogActions>
                             {
                                 (rootStore.modal.isConfirmDialog) ? 
