@@ -60,25 +60,21 @@ export default class TodoItemComponent extends Component<TodoItemComponentProps,
             })
         } else {
             this.setState({
-                isEdit: false
+                titleValue: this.state.titleValue,
+                isFinishedValue: this.state.isFinishedValue
             }, () => {
                 this.setState({
-                    titleValue: this.props.title,
-                    isFinishedValue: this.props.isFinished
+                    isEdit: false
                 })
             })
         }
     }
 
     onUpdate(){
-        this.setState({
-            isEdit: false
-        }, () => {
-            this.props.onUpdate({
-                id: this.props.id, 
-                title: this.state.titleValue, 
-                isFinished: this.state.isFinishedValue
-            })
+        this.props.onUpdate({
+            id: this.props.id, 
+            title: this.state.titleValue, 
+            isFinished: this.state.isFinishedValue
         })
     }
 

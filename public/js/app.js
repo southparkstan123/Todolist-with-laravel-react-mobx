@@ -74933,25 +74933,20 @@ var TodoItemComponent = (function (_super) {
         }
         else {
             this.setState({
-                isEdit: false
+                titleValue: this.state.titleValue,
+                isFinishedValue: this.state.isFinishedValue
             }, function () {
                 _this.setState({
-                    titleValue: _this.props.title,
-                    isFinishedValue: _this.props.isFinished
+                    isEdit: false
                 });
             });
         }
     };
     TodoItemComponent.prototype.onUpdate = function () {
-        var _this = this;
-        this.setState({
-            isEdit: false
-        }, function () {
-            _this.props.onUpdate({
-                id: _this.props.id,
-                title: _this.state.titleValue,
-                isFinished: _this.state.isFinishedValue
-            });
+        this.props.onUpdate({
+            id: this.props.id,
+            title: this.state.titleValue,
+            isFinished: this.state.isFinishedValue
         });
     };
     TodoItemComponent.prototype.render = function () {
@@ -75153,7 +75148,7 @@ var TodoListService = (function () {
                         return [2, result.data];
                     case 2:
                         error_1 = _a.sent();
-                        return [2, error_1];
+                        return [2, error_1.response.data];
                     case 3: return [2];
                 }
             });
@@ -75161,7 +75156,7 @@ var TodoListService = (function () {
     };
     TodoListService.addTodoItem = function (payload) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, errorObj, error_2;
+            var result, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75169,21 +75164,10 @@ var TodoListService = (function () {
                         return [4, axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/todos', payload)];
                     case 1:
                         result = _a.sent();
-                        if (result.data.errors) {
-                            errorObj = {
-                                title: result.data.title,
-                                code: result.data.code,
-                                errors: result.data.errors
-                            };
-                            return [2, errorObj];
-                        }
-                        else {
-                            return [2, result.data.item];
-                        }
-                        return [3, 3];
+                        return [2, result.data.item];
                     case 2:
                         error_2 = _a.sent();
-                        return [2, error_2];
+                        return [2, error_2.response.data];
                     case 3: return [2];
                 }
             });
@@ -75202,7 +75186,7 @@ var TodoListService = (function () {
                         return [2, result.data];
                     case 2:
                         error_3 = _a.sent();
-                        return [2, error_3];
+                        return [2, error_3.response.data];
                     case 3: return [2];
                 }
             });
@@ -75221,7 +75205,7 @@ var TodoListService = (function () {
                         return [2, result.data];
                     case 2:
                         error_4 = _a.sent();
-                        return [2, error_4];
+                        return [2, error_4.response.data];
                     case 3: return [2];
                 }
             });
@@ -75310,7 +75294,7 @@ var TodoListStore = (function () {
     });
     TodoListStore.prototype.fetchAllItems = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_1;
+            var result, error_1, title, errors, code;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75322,10 +75306,11 @@ var TodoListStore = (function () {
                         return [3, 3];
                     case 2:
                         error_1 = _a.sent();
+                        title = error_1.title, errors = error_1.errors, code = error_1.code;
                         this.rootStore.modal.openModal({
-                            title: error_1.title,
-                            errors: error_1.errors,
-                            code: error_1.code,
+                            title: title,
+                            errors: errors,
+                            code: code,
                             isConfirmDialog: false
                         });
                         return [3, 3];
@@ -75336,7 +75321,7 @@ var TodoListStore = (function () {
     };
     TodoListStore.prototype.deleteTodoItemByID = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_2;
+            var result, error_2, title, errors, code;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75348,10 +75333,11 @@ var TodoListStore = (function () {
                         return [3, 3];
                     case 2:
                         error_2 = _a.sent();
+                        title = error_2.title, errors = error_2.errors, code = error_2.code;
                         this.rootStore.modal.openModal({
-                            title: error_2.title,
-                            errors: error_2.errors,
-                            code: error_2.code,
+                            title: title,
+                            errors: errors,
+                            code: code,
                             isConfirmDialog: false
                         });
                         return [3, 3];
@@ -75362,7 +75348,7 @@ var TodoListStore = (function () {
     };
     TodoListStore.prototype.addTodoItem = function (payload) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_3;
+            var result, error_3, title, errors, code;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75379,10 +75365,11 @@ var TodoListStore = (function () {
                         return [3, 3];
                     case 2:
                         error_3 = _a.sent();
+                        title = error_3.title, errors = error_3.errors, code = error_3.code;
                         this.rootStore.modal.openModal({
-                            title: error_3.title,
-                            errors: error_3.errors,
-                            code: error_3.code,
+                            title: title,
+                            errors: errors,
+                            code: code,
                             isConfirmDialog: false
                         });
                         return [3, 3];
@@ -75393,7 +75380,7 @@ var TodoListStore = (function () {
     };
     TodoListStore.prototype.updateTodoItem = function (todoItemObj) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, updatedItem_1, error_4;
+            var result, updatedItem_1, error_4, title, errors, code;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75413,10 +75400,11 @@ var TodoListStore = (function () {
                         return [3, 3];
                     case 2:
                         error_4 = _a.sent();
+                        title = error_4.title, errors = error_4.errors, code = error_4.code;
                         this.rootStore.modal.openModal({
-                            title: error_4.title,
-                            errors: error_4.errors,
-                            code: error_4.code,
+                            title: title,
+                            errors: errors,
+                            code: code,
                             isConfirmDialog: false
                         });
                         return [3, 3];

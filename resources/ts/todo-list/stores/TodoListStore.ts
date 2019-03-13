@@ -39,10 +39,11 @@ export class TodoListStore{
         const result: Array<TodoItem> = await TodoListService.fetchAllItems()
         this.todolist = result;
       } catch (error) {
+        const { title, errors, code } = error;
         this.rootStore.modal.openModal({
-          title: error.title,
-          errors: error.errors,
-          code: error.code,
+          title,
+          errors,
+          code,
           isConfirmDialog: false
         });
       }
@@ -54,12 +55,13 @@ export class TodoListStore{
         const result: Array<TodoItem> = await TodoListService.deleteTodoItemByID(id)
         this.todolist = this.todolist.filter((todoItem: TodoItem) => todoItem.id !== id);
       } catch (error) {
+        const { title, errors, code } = error;
         this.rootStore.modal.openModal({
-          title: error.title,
-          errors: error.errors,
-          code: error.code,
+          title,
+          errors,
+          code,
           isConfirmDialog: false
-        })
+        });
       }
     }
   
@@ -68,17 +70,18 @@ export class TodoListStore{
       try {
         const result: any = await TodoListService.addTodoItem(payload);
         if(result.errors){
-          throw result
+          throw result;
         } else {
           this.todolist = [result, ...this.todolist];
         }
       } catch (error) {
+        const { title, errors, code } = error;
         this.rootStore.modal.openModal({
-          title: error.title,
-          errors: error.errors,
-          code: error.code,
+          title,
+          errors,
+          code,
           isConfirmDialog: false
-        })
+        });
       }
     }
   
@@ -95,10 +98,11 @@ export class TodoListStore{
           })
         }
       } catch (error) {
+        const { title, errors, code } = error;
         this.rootStore.modal.openModal({
-          title: error.title,
-          errors: error.errors,
-          code: error.code,
+          title,
+          errors,
+          code,
           isConfirmDialog: false
         });
       }
