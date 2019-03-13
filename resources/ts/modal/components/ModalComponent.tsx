@@ -38,17 +38,6 @@ const ErrorDetail = (props: {errorObj: object | undefined}) => {
 @observer
 export class ModalComponent extends Component<ModalComponentProps, ModalComponentState>{
 
-    // codeMapClass = (code: number): string => {
-    //     const codeStr: string = code.toString();
-    //     if(/2[0-9][0-9]/.test(codeStr)){
-    //         return 'green';
-    //     } else if (/[4-5][0-9][0-9]/.test(codeStr)) {
-    //         return 'red';
-    //     } else {
-    //         return 'black';
-    //     }
-    // }
-
     constructor(props: ModalComponentProps){
         super(props)
         this.state = {
@@ -64,12 +53,6 @@ export class ModalComponent extends Component<ModalComponentProps, ModalComponen
     }
 
     render(){
-        // const MyDialogTitle = withStyles({
-        //     root: {
-        //         'background-color': this.codeMapClass(rootStore.modal.getCode)
-        //     },
-        // })(DialogTitle);
-
         return  (<Dialog 
                         fullScreen={false} 
                         open={rootStore.modal.isShow} 

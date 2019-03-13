@@ -63,7 +63,7 @@ class TodoItemController extends Controller
                 'title' => 'Item cannot be updated',
                 'errors' => $validator->errors()
             ];
-            return response()->json($status, 400);
+            return response()->json($status);
         }else{   
             $todo = TodoItem::find($id);
             $todo->title =  $request->title;

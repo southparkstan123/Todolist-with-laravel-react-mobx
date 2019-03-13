@@ -75199,7 +75199,7 @@ var TodoListService = (function () {
                         return [4, axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('/api/v1/todos/' + todoItemObj.id, todoItemObj)];
                     case 1:
                         result = _a.sent();
-                        return [2, result.data.item];
+                        return [2, result.data];
                     case 2:
                         error_3 = _a.sent();
                         return [2, error_3];
@@ -75393,17 +75393,23 @@ var TodoListStore = (function () {
     };
     TodoListStore.prototype.updateTodoItem = function (todoItemObj) {
         return __awaiter(this, void 0, void 0, function () {
-            var updatedItem_1, error_4;
+            var result, updatedItem_1, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         return [4, _services_TodoListService__WEBPACK_IMPORTED_MODULE_1__["default"].updateTodoItem(todoItemObj)];
                     case 1:
-                        updatedItem_1 = _a.sent();
-                        this.todolist = this.todolist.map(function (todoItem) {
-                            return (todoItem.id === updatedItem_1.id) ? updatedItem_1 : todoItem;
-                        });
+                        result = _a.sent();
+                        if (result.errors) {
+                            throw result;
+                        }
+                        else {
+                            updatedItem_1 = result.item;
+                            this.todolist = this.todolist.map(function (todoItem) {
+                                return (todoItem.id === updatedItem_1.id) ? updatedItem_1 : todoItem;
+                            });
+                        }
                         return [3, 3];
                     case 2:
                         error_4 = _a.sent();

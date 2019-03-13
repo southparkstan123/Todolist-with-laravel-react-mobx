@@ -85,10 +85,15 @@ export class TodoListStore{
     @action
     async updateTodoItem(todoItemObj: TodoItem) {
       try {
-        const updatedItem: TodoItem = await TodoListService.updateTodoItem(todoItemObj)
-        this.todolist = this.todolist.map(todoItem => {
-          return (todoItem.id === updatedItem.id) ? updatedItem : todoItem
-        })
+        const result: TodoItem | any = await TodoListService.updateTodoItem(todoItemObj)
+        if(result.errors){
+          throw result;
+        } else {
+          const updatedItem: TodoItem = result.item;
+          this.todolist = this.todolist.map(todoItem => {
+            return (todoItem.id === updatedItem.id) ? updatedItem : todoItem
+          })
+        }
       } catch (error) {
         this.rootStore.modal.openModal({
           title: error.title,

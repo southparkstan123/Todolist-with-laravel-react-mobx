@@ -31,7 +31,7 @@ export default class TodoListService{
     static async updateTodoItem(todoItemObj: TodoItem): Promise<TodoItem>{
         try {
             const result: AxiosResponse<any> = await axios.put('/api/v1/todos/' + todoItemObj.id, todoItemObj);
-            return result.data.item;
+            return result.data;
         } catch (error) {
             return error
         }
