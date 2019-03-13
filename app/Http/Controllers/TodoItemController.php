@@ -25,7 +25,7 @@ class TodoItemController extends Controller
                 'title' => 'Item cannot be created',
                 'errors' => $validator->errors()
             ];
-            return response()->json($status);
+            return response()->json($status, 400);
         }else{
 
             $todo = new TodoItem();
@@ -63,8 +63,14 @@ class TodoItemController extends Controller
                 'title' => 'Item cannot be updated',
                 'errors' => $validator->errors()
             ];
-            return response()->json($status);
-        }else{   
+            return response()->json($status, 400);
+        } else if($result === null) {
+            $status = [
+                'code' => 404,
+                'title' => 'Item not found'
+            ];
+            return response()->json($status, 404);
+        } else {   
             $todo = TodoItem::find($id);
             $todo->title =  $request->title;
             $todo->isFinished = $request->isFinished;
@@ -87,7 +93,13 @@ class TodoItemController extends Controller
                 'title' => 'Item deleted'
             ];
             return response()->json($status, 200);
-        }else{
+        } else if($result === null){
+            $status = [
+                'code' => 404,
+                'title' => 'Item not found'
+            ];
+            return response()->json($status, 404);
+        } else{
             $status = [
                 'code' => 500,
                 'title' => 'Item cannot be deleted'
