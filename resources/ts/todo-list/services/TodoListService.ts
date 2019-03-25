@@ -15,7 +15,7 @@ export default class TodoListService{
     static async addTodoItem(payload: {title: string}): Promise<any>{
         try {
             const result: AxiosResponse<any> = await axios.post('/api/v1/todos', payload);
-            return result.data.item;
+            return result.data;
         } catch (error) {
             return error.response.data;
         }

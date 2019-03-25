@@ -52,7 +52,7 @@ export class TodoListStore{
     @action
     async deleteTodoItemByID(id: number) {
       try {
-        const result: Array<TodoItem> = await TodoListService.deleteTodoItemByID(id)
+        const result: any = await TodoListService.deleteTodoItemByID(id)
         this.todolist = this.todolist.filter((todoItem: TodoItem) => todoItem.id !== id);
       } catch (error) {
         const { title, errors, code } = error;
@@ -72,7 +72,12 @@ export class TodoListStore{
         if(result.errors){
           throw result;
         } else {
-          this.todolist = [result, ...this.todolist];
+          this.todolist = [result.item, ...this.todolist];
+          this.rootStore.modal.openModal({
+            title: result.title,
+            code: result.code,
+            isConfirmDialog: false
+          });
         }
       } catch (error) {
         const { title, errors, code } = error;
@@ -95,7 +100,12 @@ export class TodoListStore{
           const updatedItem: TodoItem = result.item;
           this.todolist = this.todolist.map(todoItem => {
             return (todoItem.id === updatedItem.id) ? updatedItem : todoItem
-          })
+          });
+          this.rootStore.modal.openModal({
+            title: result.title,
+            code: result.code,
+            isConfirmDialog: false
+          });
         }
       } catch (error) {
         const { title, errors, code } = error;

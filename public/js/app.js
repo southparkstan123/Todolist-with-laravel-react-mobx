@@ -75164,7 +75164,7 @@ var TodoListService = (function () {
                         return [4, axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/todos', payload)];
                     case 1:
                         result = _a.sent();
-                        return [2, result.data.item];
+                        return [2, result.data];
                     case 2:
                         error_2 = _a.sent();
                         return [2, error_2.response.data];
@@ -75360,7 +75360,12 @@ var TodoListStore = (function () {
                             throw result;
                         }
                         else {
-                            this.todolist = [result].concat(this.todolist);
+                            this.todolist = [result.item].concat(this.todolist);
+                            this.rootStore.modal.openModal({
+                                title: result.title,
+                                code: result.code,
+                                isConfirmDialog: false
+                            });
                         }
                         return [3, 3];
                     case 2:
@@ -75395,6 +75400,11 @@ var TodoListStore = (function () {
                             updatedItem_1 = result.item;
                             this.todolist = this.todolist.map(function (todoItem) {
                                 return (todoItem.id === updatedItem_1.id) ? updatedItem_1 : todoItem;
+                            });
+                            this.rootStore.modal.openModal({
+                                title: result.title,
+                                code: result.code,
+                                isConfirmDialog: false
                             });
                         }
                         return [3, 3];
