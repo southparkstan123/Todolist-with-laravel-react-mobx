@@ -64,14 +64,8 @@ class TodoItemController extends Controller
                 'errors' => $validator->errors()
             ];
             return response()->json($status, 400);
-        } else if($result === null) {
-            $status = [
-                'code' => 404,
-                'title' => 'Item not found'
-            ];
-            return response()->json($status, 404);
         } else {   
-            $todo = TodoItem::find($id);
+            $todo = TodoItem::findOrFail($id);
             $todo->title =  $request->title;
             $todo->isFinished = $request->isFinished;
             $todo->save();
